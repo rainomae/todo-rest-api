@@ -1,0 +1,359 @@
+{
+  "info": {
+    "name": "Todo REST API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET all todos - empty list",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/todos"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));",
+              "pm.test('Response is an array', () => pm.expect(pm.response.json()).to.be.an('array'));",
+              "pm.test('Response time under 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST create todo - happy path",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/todos",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Buy groceries\", \"description\": \"Milk, eggs, bread\", \"completed\": false}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+              "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));",
+              "pm.test('Location header exists', () => pm.expect(pm.response.headers.get('Location')).to.exist);",
+              "const json = pm.response.json();",
+              "pm.test('Response has id', () => pm.expect(json).to.have.property('id'));",
+              "pm.test('Title matches', () => pm.expect(json.title).to.eql('Buy groceries'));",
+              "pm.test('Completed is false by default', () => pm.expect(json.completed).to.be.false);",
+              "pm.test('createdAt exists', () => pm.expect(json).to.have.property('createdAt'));",
+              "pm.test('Response time under 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));",
+              "pm.environment.set('todoId', String(json.id));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST create todo - blank title (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/todos",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"\", \"description\": \"Test\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+              "const json = pm.response.json();",
+              "pm.test('Error response has status field', () => pm.expect(json.status).to.eql(400));",
+              "pm.test('Error response has message', () => pm.expect(json).to.have.property('message'));",
+              "pm.test('Error response has timestamp', () => pm.expect(json).to.have.property('timestamp'));",
+              "pm.test('Response time under 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST create todo - missing body (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/todos",
+        "body": { "mode": "raw", "raw": "" }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+              "pm.test('Message mentions malformed JSON', () => pm.expect(pm.response.json().message).to.include('Malformed'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST create todo - wrong Content-Type (415)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "text/plain" }],
+        "url": "{{baseUrl}}/api/todos",
+        "body": { "mode": "raw", "raw": "title=test" }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 415', () => pm.response.to.have.status(415));",
+              "pm.test('Error status field is 415', () => pm.expect(pm.response.json().status).to.eql(415));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET all todos - list has one item",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/todos"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('List has one item', () => pm.expect(pm.response.json()).to.have.lengthOf(1));",
+              "pm.test('Response time under 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET todo by id - happy path",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/todos/{{todoId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('ID matches', () => pm.expect(String(json.id)).to.eql(pm.environment.get('todoId')));",
+              "pm.test('Has title', () => pm.expect(json).to.have.property('title'));",
+              "pm.test('Has completed field', () => pm.expect(json).to.have.property('completed'));",
+              "pm.test('Response time under 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET todo by id - not found (404)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/todos/999999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+              "const json = pm.response.json();",
+              "pm.test('Error status is 404', () => pm.expect(json.status).to.eql(404));",
+              "pm.test('Error has message', () => pm.expect(json).to.have.property('message'));",
+              "pm.test('Response time under 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET todo by id - string id (400)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/todos/abc"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+              "pm.test('Error status is 400', () => pm.expect(pm.response.json().status).to.eql(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT update todo - happy path",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/todos/{{todoId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Buy groceries and coffee\", \"description\": \"Updated list\", \"completed\": true}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Title is updated', () => pm.expect(json.title).to.eql('Buy groceries and coffee'));",
+              "pm.test('Completed is true', () => pm.expect(json.completed).to.be.true);",
+              "pm.test('updatedAt exists', () => pm.expect(json).to.have.property('updatedAt'));",
+              "pm.test('Response time under 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT update todo - not found (404)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/todos/999999",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Ghost todo\", \"completed\": false}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+              "pm.test('Error status is 404', () => pm.expect(pm.response.json().status).to.eql(404));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT update todo - blank title (400)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/todos/{{todoId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"\", \"completed\": false}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+              "pm.test('Error status is 400', () => pm.expect(pm.response.json().status).to.eql(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PATCH - method not allowed (405)",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/todos/{{todoId}}",
+        "body": { "mode": "raw", "raw": "{}" }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 405', () => pm.response.to.have.status(405));",
+              "pm.test('Error status is 405', () => pm.expect(pm.response.json().status).to.eql(405));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE todo - not found (404)",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/todos/999999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+              "pm.test('Error status is 404', () => pm.expect(pm.response.json().status).to.eql(404));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE todo - happy path",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/todos/{{todoId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 204', () => pm.response.to.have.status(204));",
+              "pm.test('Body is empty', () => pm.expect(pm.response.text()).to.be.empty);",
+              "pm.test('Response time under 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET deleted todo - gone (404)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/todos/{{todoId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 404 after delete', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "todoId",
+      "value": ""
+    }
+  ]
+}
