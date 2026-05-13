@@ -20,8 +20,12 @@ Lihtne ülesannete haldamise REST API, mis on ehitatud Spring Boot raamistikuga.
   - Allalaadimine: [Adoptium Temurin 26](https://adoptium.net/temurin/releases/?version=26) (tasuta, OpenJDK)
   - Veendu, et `JAVA_HOME` keskkonnamuutuja viitab Java 26 paigaldusele
 - **Gradle 9.5+** — tuleb automaatselt Gradle wrapperi kaudu (`./gradlew` või `gradlew.bat`), eraldi paigaldama ei pea
-- **Git** paigaldatud
-- **Node.js + Newman** API testide jaoks: `npm install -g newman`
+- **Git** paigaldatud — kontroll: `git --version`
+- **Node.js 18+ ja npm** (ainult API testide jaoks) — kontroll: `node --version` ja `npm --version`
+  - Allalaadimine: [nodejs.org](https://nodejs.org/) (võta LTS versioon)
+  - npm tuleb Node.js-iga automaatselt kaasa, eraldi paigaldama ei pea
+- **Newman** paigaldatakse globaalselt npm-iga: `npm install -g newman`
+  - Kontroll: `newman --version`
 
 ## Käivitamine
 
