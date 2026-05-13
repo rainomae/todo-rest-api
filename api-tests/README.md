@@ -11,16 +11,32 @@
 
 ## Käivitamine
 
-**1. Käivita rakendus (eraldi terminalis):**
+**1. Käivita rakendus (eraldi terminalis, projekti juurkaustast):**
+
+Linux / macOS:
 ```bash
-./gradlew bootRun
+./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
 
-**2. Käivita Newman collection:**
+Windows (cmd):
+```cmd
+gradlew.bat bootRun --args="--spring.profiles.active=dev"
+```
+
+> Newman ise ei vaja H2 console'i, aga `dev` profiili kasutamine hoiab käivituskäsu kogu projektis ühtsena.
+
+**2. Käivita Newman collection (projekti juurkaustast):**
+
+Linux / macOS:
 ```bash
 newman run api-tests/TodoAPI.postman_collection.json \
   -e api-tests/TodoAPI.postman_environment.json \
   --reporters cli
+```
+
+Windows (cmd, üks rida):
+```cmd
+newman run api-tests\TodoAPI.postman_collection.json -e api-tests\TodoAPI.postman_environment.json --reporters cli
 ```
 
 ## Mida collection katab

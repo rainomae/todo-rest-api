@@ -16,16 +16,31 @@ Lihtne ülesannete haldamise REST API, mis on ehitatud Spring Boot raamistikuga.
 
 ## Eeldused
 
-- Java 26+ paigaldatud (`java --version`)
-- Gradle 9.5+ — tuleb automaatselt Gradle wrapperi kaudu (`./gradlew`)
-- Git paigaldatud
-- Node.js + Newman API testide jaoks (`npm install -g newman`)
+- **Java 26+** paigaldatud — kontroll: `java --version`
+  - Allalaadimine: [Adoptium Temurin 26](https://adoptium.net/temurin/releases/?version=26) (tasuta, OpenJDK)
+  - Veendu, et `JAVA_HOME` keskkonnamuutuja viitab Java 26 paigaldusele
+- **Gradle 9.5+** — tuleb automaatselt Gradle wrapperi kaudu (`./gradlew` või `gradlew.bat`), eraldi paigaldama ei pea
+- **Git** paigaldatud
+- **Node.js + Newman** API testide jaoks: `npm install -g newman`
 
 ## Käivitamine
 
+**Linux / macOS:**
 ```bash
 ./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
+
+**Windows (cmd):**
+```cmd
+gradlew.bat bootRun --args="--spring.profiles.active=dev"
+```
+
+**Windows (PowerShell):**
+```powershell
+.\gradlew.bat bootRun --args="--spring.profiles.active=dev"
+```
+
+> **Märkus:** lipp `--spring.profiles.active=dev` aktiveerib dev profiili, mis lubab H2 konsooli. Ilma selleta käivitub rakendus tootmisprofiiliga ja `/h2-console` ei ole kättesaadav.
 
 Rakendus käivitub aadressil **http://localhost:8080**
 
@@ -112,22 +127,31 @@ Kõik vead tagastatakse JSON kujul:
 
 ## Testide käivitamine
 
-**JUnit unit- ja integratsioonitestid:**
+**JUnit unit- ja integratsioonitestid** (Linux/macOS / Windows):
 ```bash
-./gradlew test
+./gradlew test          # Linux/macOS
+gradlew.bat test        # Windows
 ```
 
 **JaCoCo kaetavuse raport:**
 ```bash
-./gradlew jacocoTestReport
+./gradlew jacocoTestReport      # Linux/macOS
+gradlew.bat jacocoTestReport    # Windows
 ```
 Raport: `build/reports/jacoco/test/html/index.html`
 Praegune kaetavus: **93.3% (line coverage)**
 
 **Newman API automaattestid** (server peab töötama):
+
+Linux / macOS:
 ```bash
 newman run api-tests/TodoAPI.postman_collection.json \
   -e api-tests/TodoAPI.postman_environment.json
+```
+
+Windows (cmd, üks rida):
+```cmd
+newman run api-tests\TodoAPI.postman_collection.json -e api-tests\TodoAPI.postman_environment.json
 ```
 
 ## Projekti struktuur
@@ -143,7 +167,8 @@ todo-rest-api/
 │   │   ├── dto/               # TodoRequest, TodoResponse, ErrorResponse (Java records)
 │   │   └── exception/         # TodoNotFoundException
 │   ├── main/resources/
-│   │   └── application.properties
+│   │   ├── application.properties      # Peamine konfiguratsioon
+│   │   └── application-dev.properties  # Dev profiil (H2 console)
 │   └── test/java/ee/rainer/todo/
 │       ├── service/           # TodoServiceImplTest (unit, Mockito)
 │       ├── controller/        # TodoControllerTest (MockMvc, @WebMvcTest)
@@ -166,6 +191,28 @@ Kaustas `docs/` asuvad:
 - [testiplaan.md](docs/testiplaan.md) — testimise eesmärk, ulatus, riskid, edukuse kriteeriumid
 - [testjuhtumid.md](docs/testjuhtumid.md) — 22 testjuhtumit (positiivsed, negatiivsed, piirjuhud, turvalisus)
 - [vearaport.md](docs/vearaport.md) — 2 tuvastatud viga koos juurpõhjuse analüüsi ja parandustega
+
+## Veaotsing
+
+**`java --version` näitab vanemat versiooni kui 26:**
+- Paigalda Java 26 ([Adoptium Temurin](https://adoptium.net/temurin/releases/?version=26)).
+- Veendu, et `JAVA_HOME` viitab uuele paigaldusele ja `PATH` sisaldab `$JAVA_HOME/bin`.
+- Gradle wrapper kasutab automaatselt toolchain'i — kui süsteemis on Java 26 olemas, leiab Gradle selle ise.
+
+**Port 8080 on hõivatud:**
+- Leia konflikteeruv protsess: `netstat -ano | findstr :8080` (Windows) või `lsof -i :8080` (Linux/macOS).
+- Või muuda porti: lisa `application.properties`-isse rida `server.port=8081`.
+
+**`/h2-console` annab 404:**
+- Käivitasid rakenduse **ilma** `--spring.profiles.active=dev` lipuks — H2 console on ainult dev profiilis.
+- Käivita uuesti dev-lipu`ga (vt "Käivitamine").
+
+**`./gradlew: command not found` (Windows):**
+- Windowsis kasuta `gradlew.bat` (mitte `./gradlew`).
+
+**Newman ei leia faili:**
+- Käivita käsk **projekti juurkaustasta** (mitte `api-tests/` seest), et suhteline tee `api-tests/TodoAPI.postman_collection.json` toimiks.
+- Veendu, et server töötab aadressil `http://localhost:8080` enne Newmani käivitamist.
 
 ## AI tööriistade kasutus
 
