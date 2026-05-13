@@ -228,4 +228,4 @@ Selle projekti arendamisel kasutasin **Claude Code** (Anthropic) töövahendina 
 - **Veaotsimine:** Claude aitas tuvastada kaks päris viga — `MethodArgumentTypeMismatchException` käsitlemata jätmine (BUG-001) ja Newman collection muutuja prioriteediprobleem.
 - **QA dokumentatsioon:** Testiplaan, testjuhtumid ja vearaport kirjutati Claude abiga.
 
-**Ise tegin:** Arhitektuuriotsused (kihtide eraldamine, DTO muster, record'ide kasutamine Lombok'u asemel), iga commit'i kinnitamine ja koodi ülevaatus, vigade reprodutseerimine ja paranduse valideerimine käsitsi Newman'iga.
+**Ise tegin:** Arhitektuuriotsused (kihtide eraldamine, DTO muster, Lombok-ist loobumine: DTO-d on record'id, Entity-l on käsitsi getter'id/setter'id), iga commit'i kinnitamine ja koodi ülevaatus, vigade reprodutseerimine ja paranduse valideerimine käsitsi Newman'iga.
