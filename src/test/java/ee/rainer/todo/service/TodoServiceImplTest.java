@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ class TodoServiceImplTest {
         sampleTodo.setTitle("Test todo");
         sampleTodo.setDescription("Test description");
         sampleTodo.setCompleted(false);
-        setField(sampleTodo, "createdAt", Instant.now());
+        setField(sampleTodo, "createdAt", LocalDateTime.now());
     }
 
     // --- findAll ---
@@ -119,7 +119,7 @@ class TodoServiceImplTest {
         setField(completedTodo, "id", 2L);
         completedTodo.setTitle("Done");
         completedTodo.setCompleted(true);
-        setField(completedTodo, "createdAt", Instant.now());
+        setField(completedTodo, "createdAt", LocalDateTime.now());
 
         TodoRequest request = new TodoRequest("Done", null, true);
         when(repository.save(any(Todo.class))).thenReturn(completedTodo);
@@ -141,7 +141,7 @@ class TodoServiceImplTest {
         updated.setTitle("Updated title");
         updated.setDescription("Updated desc");
         updated.setCompleted(true);
-        setField(updated, "createdAt", Instant.now());
+        setField(updated, "createdAt", LocalDateTime.now());
 
         TodoRequest request = new TodoRequest("Updated title", "Updated desc", true);
         when(repository.findById(1L)).thenReturn(Optional.of(sampleTodo));
