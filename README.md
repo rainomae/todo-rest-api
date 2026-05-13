@@ -17,6 +17,7 @@ Lihtne ülesannete haldamise REST API, mis on ehitatud Spring Boot raamistikuga.
 ## Eeldused
 
 - Java 26+ paigaldatud (`java --version`)
+- Gradle 9.5+ — tuleb automaatselt Gradle wrapperi kaudu (`./gradlew`)
 - Git paigaldatud
 - Node.js + Newman API testide jaoks (`npm install -g newman`)
 
@@ -53,8 +54,7 @@ Rakendus käivitub aadressil **http://localhost:8080**
   "title": "Osta piim",
   "description": "Poest",
   "completed": false,
-  "createdAt": "2026-05-12T13:00:00Z",
-  "updatedAt": "2026-05-12T13:00:00Z"
+  "createdAt": "2026-05-12T13:00:00"
 }
 ```
 
