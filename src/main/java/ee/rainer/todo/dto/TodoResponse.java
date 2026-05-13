@@ -7,6 +7,5 @@ public record TodoResponse(
         String title,
         String description,
         boolean completed,
-        Instant createdAt,
-        Instant updatedAt
+        Instant createdAt
 ) {}

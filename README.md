@@ -23,12 +23,12 @@ Lihtne ülesannete haldamise REST API, mis on ehitatud Spring Boot raamistikuga.
 ## Käivitamine
 
 ```bash
-./gradlew bootRun
+./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
 
 Rakendus käivitub aadressil **http://localhost:8080**
 
-- H2 console: http://localhost:8080/h2-console
+- H2 console (ainult dev profiilis): http://localhost:8080/h2-console
   - JDBC URL: `jdbc:h2:mem:tododb`
   - Username: `sa`, Password: *(tühi)*
 - Swagger UI: http://localhost:8080/swagger-ui.html

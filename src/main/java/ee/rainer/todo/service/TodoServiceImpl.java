@@ -81,8 +81,7 @@ public class TodoServiceImpl implements TodoService {
                 todo.getTitle(),
                 todo.getDescription(),
                 todo.isCompleted(),
-                todo.getCreatedAt(),
-                todo.getUpdatedAt()
+                todo.getCreatedAt()
         );
     }
 }

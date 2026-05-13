@@ -5,10 +5,10 @@ import jakarta.validation.constraints.Size;
 
 public record TodoRequest(
         @NotBlank(message = "Title is required")
-        @Size(max = 255, message = "Title must not exceed 255 characters")
+        @Size(max = 100, message = "Title must not exceed 100 characters")
         String title,
 
-        @Size(max = 2000, message = "Description must not exceed 2000 characters")
+        @Size(max = 500, message = "Description must not exceed 500 characters")
         String description,
 
         boolean completed

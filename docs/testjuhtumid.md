@@ -38,8 +38,8 @@
 
 | ID | Kategooria | Pealkiri | Eeltingimused | Sammud | Sisend | Oodatud tulemus | Tegelik tulemus | Staatus | Prioriteet |
 |---|---|---|---|---|---|---|---|---|---|
-| TC-016 | Piirjuht | Täpselt 255-märgine pealkiri | Rakendus töötab | `POST /api/todos` 255-märgilise title-ga | `{"title":"A".repeat(255)}` | 201 Created | 201 Created | Pass | Keskmine |
-| TC-017 | Piirjuht | 256-märgine pealkiri (üle piiri) | Rakendus töötab | `POST /api/todos` 256-märgilise title-ga | `{"title":"A".repeat(256)}` | 400 Bad Request | 400 Bad Request, `"Title must not exceed 255 characters"` | Pass | Keskmine |
+| TC-016 | Piirjuht | Täpselt 100-märgine pealkiri | Rakendus töötab | `POST /api/todos` 100-märgilise title-ga | `{"title":"A".repeat(100)}` | 201 Created | 201 Created | Pass | Keskmine |
+| TC-017 | Piirjuht | 101-märgine pealkiri (üle piiri) | Rakendus töötab | `POST /api/todos` 101-märgilise title-ga | `{"title":"A".repeat(101)}` | 400 Bad Request | 400 Bad Request, `"Title must not exceed 100 characters"` | Pass | Keskmine |
 | TC-018 | Piirjuht | Erimärgid pealkirjas (õ, ä, ü, ö) | Rakendus töötab | `POST /api/todos` erimärkidega | `{"title":"Ülesanne õppida ära"}` | 201 Created, erimärgid säilivad | 201 Created, title täpselt sama | Pass | Keskmine |
 | TC-019 | Piirjuht | Emoji pealkirjas | Rakendus töötab | `POST /api/todos` emoji-ga | `{"title":"Test 🎉"}` | 201 Created, emoji säilib | 201 Created, title sisaldab emoji-t | Pass | Madal |
 | TC-020 | Piirjuht | Negatiivne ID päringus | Rakendus töötab | `GET /api/todos/-1` | id = -1 | 404 Not Found | 404 Not Found | Pass | Madal |

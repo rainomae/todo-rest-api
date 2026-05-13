@@ -40,7 +40,6 @@ class TodoServiceImplTest {
         sampleTodo.setDescription("Test description");
         sampleTodo.setCompleted(false);
         setField(sampleTodo, "createdAt", Instant.now());
-        setField(sampleTodo, "updatedAt", Instant.now());
     }
 
     // --- findAll ---
@@ -121,7 +120,6 @@ class TodoServiceImplTest {
         completedTodo.setTitle("Done");
         completedTodo.setCompleted(true);
         setField(completedTodo, "createdAt", Instant.now());
-        setField(completedTodo, "updatedAt", Instant.now());
 
         TodoRequest request = new TodoRequest("Done", null, true);
         when(repository.save(any(Todo.class))).thenReturn(completedTodo);
@@ -144,7 +142,6 @@ class TodoServiceImplTest {
         updated.setDescription("Updated desc");
         updated.setCompleted(true);
         setField(updated, "createdAt", Instant.now());
-        setField(updated, "updatedAt", Instant.now());
 
         TodoRequest request = new TodoRequest("Updated title", "Updated desc", true);
         when(repository.findById(1L)).thenReturn(Optional.of(sampleTodo));

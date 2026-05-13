@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
@@ -17,12 +16,12 @@ public class Todo {
     private Long id;
 
     @NotBlank
-    @Size(max = 255)
-    @Column(nullable = false, length = 255)
+    @Size(max = 100)
+    @Column(nullable = false, length = 100)
     private String title;
 
-    @Size(max = 2000)
-    @Column(length = 2000)
+    @Size(max = 500)
+    @Column(length = 500)
     private String description;
 
     @Column(nullable = false)
@@ -31,10 +30,6 @@ public class Todo {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
-
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private Instant updatedAt;
 
     public Todo() {}
 
@@ -50,6 +45,4 @@ public class Todo {
     public void setCompleted(boolean completed) { this.completed = completed; }
 
     public Instant getCreatedAt() { return createdAt; }
-
-    public Instant getUpdatedAt() { return updatedAt; }
 }

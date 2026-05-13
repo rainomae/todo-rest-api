@@ -35,7 +35,7 @@ class TodoControllerTest {
     private TodoService service;
 
     private TodoResponse sampleResponse() {
-        return new TodoResponse(1L, "Test todo", "Description", false, Instant.now(), Instant.now());
+        return new TodoResponse(1L, "Test todo", "Description", false, Instant.now());
     }
 
     // --- GET /api/todos ---
@@ -132,7 +132,7 @@ class TodoControllerTest {
     @Test
     void shouldUpdateTodoAndReturn200() throws Exception {
         TodoRequest request = new TodoRequest("Updated", "New desc", true);
-        TodoResponse updated = new TodoResponse(1L, "Updated", "New desc", true, Instant.now(), Instant.now());
+        TodoResponse updated = new TodoResponse(1L, "Updated", "New desc", true, Instant.now());
         when(service.update(eq(1L), any())).thenReturn(updated);
 
         mockMvc.perform(put("/api/todos/1")
